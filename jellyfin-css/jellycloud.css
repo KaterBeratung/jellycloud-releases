@@ -1,60 +1,84 @@
 /* ==========================================================================
-   Jellycloud fuer Jellyfin: die Optik des Jellycloud Players im Web-Client von Jellyfin
-   (Midnight-Theme, Liquid-Glass-Kapseln, abgerundete Karten mit Leuchten beim Ueberfahren,
-   Banner mit Glas-Knoepfen) und eine passende Gestaltung der "Media Bar".
+   Jellycloud fuer Jellyfin: ein dunkles, weiches Theme im Stil von ElegantFin (Jellyseerr-nahe Blau-Grau-Toene, Indigo als Akzent,
+   grosse Rundungen, durchscheinende Kopfzeile, Karten mit Rand und Glanz beim Ueberfahren, helle Abspiel-Kapsel)
+   plus passende Gestaltung der "Media Bar". Eigener Code, nur das Aussehen ist angelehnt (ElegantFin steht unter GPL-2.0).
+   Geprueft an Jellyfin 12.4 (Standard-Oberflaeche, Kopfleiste aus MUI) im Browser; die Regeln fuer die alte Kopfleiste (.skinHeader) und
+   die Media Bar sind fuer 10.9 bis 11 gedacht und dort nicht geprueft.
 
-   Einbau: Jellyfin-Dashboard > Allgemein > "Benutzerdefinierter CSS-Code": nur diese eine Zeile einfuegen
+   Einbau: Jellyfin-Dashboard > Allgemein (oder Branding) > "Benutzerdefinierter CSS-Code": nur diese eine Zeile einfuegen
      @import url("https://cdn.jsdelivr.net/gh/KaterBeratung/jellycloud-releases@main/jellyfin-css/jellycloud.css");
    (oder den ganzen Inhalt dieser Datei). Anleitung, Anpassung (Akzentfarbe) und Media Bar: siehe README.md in diesem Ordner.
 
-   Aufbau: 1 Farben und Masse (hier anpassen)  2 Grundlage  3 Kopfzeile und Tabs  4 Seitenmenue
-           5 Reihen und Karten  6 Knoepfe und Eingabefelder  7 Dialoge und Menues  8 Detailseite
-           9 Media Bar  10 Kleine Bildschirme und weniger Bewegung
+   Aufbau: 1 Farben und Masse (hier anpassen)  2 Grundlage  3 Kopfzeile  4 Seitenmenue und Tabs  5 Reihen und Karten
+           6 Knoepfe und Eingabefelder  7 Dialoge und Menues  8 Detailseite  9 Anmeldung  10 Media Bar  11 Kleine Bildschirme
    Hinweis: Auf Karten gibt es bewusst keinen Weichzeichner (backdrop-filter): bei Hunderten Karten kostet er viel Arbeitsspeicher und Grafikleistung.
    ========================================================================== */
 
 
 /* ---------- 1  Farben und Masse ---------- */
 :root {
-  /* Akzentfarbe: Standard ist das neutrale Silberweiss der App. --jc-accent-rgb ist die Farbe fuer durchscheinende Toenungen
-     (bei hellen Akzenten dunkler), --jc-accent-ink die Schrift auf Akzentflaechen. Beispiele am Ende der README. */
-  --jc-accent: #f5f5f7;
-  --jc-accent-rgb: 147 147 148;
-  --jc-accent-ink: #12131a;
+  /* Akzentfarbe (Standard: Indigo). --jc-accent-rgb = Tonung fuer durchscheinende Flaechen, --jc-accent-ink = Schrift auf Akzentflaechen.
+     Weitere Farben und die silberne Palette der Jellycloud-App stehen in der README. */
+  --jc-accent: hsl(243 75% 62%);
+  --jc-accent-rgb: 93 85 231;
+  --jc-accent-ink: #ffffff;
+  --jc-accent-hover: rgb(117 111 226);
 
-  --jc-radius: 18px;
-  --jc-pad: clamp(20px, 3.6vw, 56px);
+  /* Rundungen und Rahmen (in em: wachsen mit der Schriftgroesse) */
+  --jc-radius: 1em;
+  --jc-radius-lg: 1.25em;
+  --jc-radius-sm: 0.5em;
+  --jc-border: 0.12em;
 
-  --jc-bg: #08080a;
-  --jc-surface: #161618;
-  --jc-surface2: #202024;
-  --jc-surface3: #2d2d32;
-  --jc-line: rgba(255, 255, 255, 0.08);
-  --jc-line2: rgba(255, 255, 255, 0.15);
-  --jc-text: #f5f5f7;
-  --jc-muted: #a1a1a8;
-  --jc-faint: #6e6e76;
-  --jc-glass: rgba(18, 18, 20, 0.72);
-  --jc-glass2: rgba(255, 255, 255, 0.07);
-
-  /* Liquid Glass: mehrschichtiges Milchglas mit heller Lichtkante oben */
-  --jc-lg-fill: rgb(26 28 44 / 0.42);
-  --jc-lg-edge: rgb(255 255 255 / 0.2);
-  --jc-lg-edge-top: rgb(255 255 255 / 0.55);
-  --jc-lg-sheen: rgb(255 255 255 / 0.3);
-  --jc-lg-text: #f3f4fa;
-  --jc-lg-muted: rgb(255 255 255 / 0.62);
-  --jc-lg-hover: rgb(255 255 255 / 0.15);
-  --jc-lg-grad: linear-gradient(150deg, var(--jc-lg-sheen) 0%, rgb(255 255 255 / 0.08) 32%, rgb(255 255 255 / 0.02) 60%, rgb(255 255 255 / 0.14) 100%);
-  --jc-lg-accent: linear-gradient(180deg, color-mix(in srgb, var(--jc-accent) 88%, #fff), var(--jc-accent));
-  --jc-lg-lift: 0 10px 24px -12px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.18);
+  /* Flaechen: Blau-Grau wie bei Jellyseerr */
+  --jc-bg: #111827;
+  --jc-bg2: #1d2635;
+  --jc-surface: rgb(30 40 54 / 0.9);
+  --jc-surface-soft: rgb(30 40 54 / 0.6);
+  --jc-input: hsl(217 19% 27%);
+  --jc-line: hsl(214 13% 22%);
+  --jc-line2: hsl(214 13% 32%);
+  --jc-hover: rgb(255 255 255 / 0.1);
+  --jc-active: rgb(255 255 255 / 0.14);
+  --jc-text: #d1d5db;
+  --jc-muted: #9ca3af;
+  --jc-faint: #6b7280;
+  --jc-strong: #ffffff;
 
   --jc-ease: cubic-bezier(0.22, 0.9, 0.24, 1);
-  --jc-ease-spring: cubic-bezier(0.34, 1.5, 0.5, 1);
+  --jc-pad: clamp(16px, 3.6vw, 56px);
   --jc-font: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Noto Sans', sans-serif;
   --jc-font-display: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Noto Sans', sans-serif;
 
   color-scheme: dark;
+}
+
+
+/* Jellyfin 12: die Farben der MUI-Oberflaeche (Dashboard, Menues, Schalter, Tabs, Knoepfe) kommen aus diesen Variablen.
+   Hier auf unsere Palette gesetzt: Das ersetzt das Jellyfin-Blau auch dort, wo kein Klassenname zu greifen ist. In aelteren Versionen ohne Wirkung. */
+html[data-theme] {
+  --jf-palette-primary-main: var(--jc-accent);
+  --jf-palette-primary-mainChannel: var(--jc-accent-rgb);
+  --jf-palette-primary-light: var(--jc-accent-hover);
+  --jf-palette-primary-dark: color-mix(in srgb, var(--jc-accent) 75%, #000);
+  --jf-palette-primary-contrastText: var(--jc-accent-ink);
+  --jf-palette-secondary-main: var(--jc-accent);
+  --jf-palette-secondary-mainChannel: var(--jc-accent-rgb);
+  --jf-palette-secondary-light: var(--jc-accent-hover);
+  --jf-palette-secondary-dark: color-mix(in srgb, var(--jc-accent) 75%, #000);
+  --jf-palette-secondary-contrastText: var(--jc-accent-ink);
+  --jf-palette-background-default: var(--jc-bg);
+  --jf-palette-background-defaultChannel: 17 24 39;
+  --jf-palette-background-paper: var(--jc-bg2);
+  --jf-palette-background-paperChannel: 29 38 53;
+  --jf-palette-text-primary: #f3f4f6;
+  --jf-palette-text-secondary: var(--jc-muted);
+  --jf-palette-divider: var(--jc-line);
+  --jf-palette-action-hover: rgb(255 255 255 / 0.08);
+  --jf-palette-action-selected: rgb(var(--jc-accent-rgb) / 0.3);
+  --jf-palette-AppBar-darkBg: var(--jc-bg2);
+  --jf-palette-AppBar-transparentBg: transparent;
+  --jf-palette-Avatar-defaultBg: var(--jc-accent);
 }
 
 
@@ -68,151 +92,193 @@ body {
 }
 .backgroundContainer,
 .backgroundContainer.withBackdrop {
-  background: var(--jc-bg) !important;
+  background: linear-gradient(180deg, var(--jc-bg), var(--jc-bg2)) !important;
 }
 ::selection {
-  background: rgb(var(--jc-accent-rgb) / 0.35);
+  background: rgb(var(--jc-accent-rgb) / 0.4);
 }
-/* Dezente Bildlaufleisten */
 * {
-  scrollbar-color: var(--jc-surface3) transparent;
+  scrollbar-color: var(--jc-line2) transparent;
 }
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--jc-surface3);
+  background: var(--jc-line2);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--jc-faint);
-  background-clip: padding-box;
-  border: 2px solid transparent;
-}
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-/* Tastatur-Fokus: heller Ring statt Jellyfin-Blau */
 :focus-visible {
-  outline-color: var(--jc-accent);
+  outline-color: var(--jc-accent-hover);
+}
+body a {
+  color: inherit;
 }
 
 
-/* ---------- 3  Kopfzeile und Tabs ---------- */
+/* ---------- 3  Kopfzeile ---------- */
+/* Jellyfin 12: Kopfleiste aus MUI. Durchscheinend: nach unten laeuft sie weich aus (Weichzeichner mit Verlaufsmaske) */
+body .MuiAppBar-root,
+body .MuiAppBar-root.MuiAppBar-colorTransparent {
+  isolation: isolate;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--jc-strong);
+}
+body .MuiAppBar-root::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -1.6em 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(17 24 39 / 0.9), rgb(17 24 39 / 0.55) 55%, transparent);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  -webkit-mask-image: linear-gradient(#000 55%, transparent);
+  mask-image: linear-gradient(#000 55%, transparent);
+}
+/* Eintraege der Leiste (Favoriten, Bibliotheken): runde Kapseln, beim Ueberfahren hell */
+body .MuiAppBar-root .MuiButton-root {
+  border-radius: 999px;
+  color: var(--jc-text);
+  font-weight: 600;
+  text-transform: none;
+  transition: background 140ms, color 140ms;
+}
+body .MuiAppBar-root .MuiButton-root:hover {
+  background: rgb(255 255 255 / 0.92);
+  color: #111827;
+}
+body .MuiAppBar-root .MuiButton-root:hover .MuiSvgIcon-root {
+  color: inherit;
+}
+body .MuiAppBar-root .MuiButton-root[aria-current='page'],
+body .MuiAppBar-root .MuiButton-root.Mui-selected,
+body .MuiAppBar-root .MuiButton-textPrimary {
+  background: rgb(var(--jc-accent-rgb) / 0.28);
+  color: var(--jc-strong);
+}
+body .MuiAppBar-root .MuiIconButton-root {
+  color: var(--jc-text);
+  transition: background 140ms, color 140ms;
+}
+body .MuiAppBar-root .MuiIconButton-root:hover {
+  background: var(--jc-active);
+  color: var(--jc-strong);
+}
+body .MuiAppBar-root .MuiAvatar-root,
+body .MuiAvatar-colorDefault {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--jc-accent) 88%, #fff), var(--jc-accent));
+  color: var(--jc-accent-ink);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 4px 12px -4px rgb(var(--jc-accent-rgb) / 0.7);
+}
+
+/* Jellyfin 10.9 bis 11: die alte Leiste */
 .skinHeader,
 .skinHeader.semiTransparent,
 .skinHeader-withBackground {
-  background: var(--jc-glass) !important;
-  -webkit-backdrop-filter: blur(26px) saturate(1.5);
-  backdrop-filter: blur(26px) saturate(1.5);
-  border-bottom: 1px solid var(--jc-line);
+  background: linear-gradient(180deg, rgb(17 24 39 / 0.9), rgb(17 24 39 / 0.55)) !important;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-bottom: 0;
   box-shadow: none;
-  color: var(--jc-text);
+  color: var(--jc-strong);
 }
 .headerButton,
 .headerButton.paper-icon-button-light {
-  width: 38px;
-  height: 38px;
   border-radius: 50%;
-  color: var(--jc-muted);
-  transition: background 140ms, color 140ms, transform 140ms var(--jc-ease);
+  color: var(--jc-text);
+  transition: background 140ms, color 140ms;
 }
 .headerButton:hover,
 .headerButton:focus-visible {
-  background: var(--jc-glass2) !important;
-  color: var(--jc-text);
-  transform: translateY(-1px);
+  background: var(--jc-active) !important;
+  color: var(--jc-strong);
 }
-.headerUserButtonRound,
-.headerUserButtonRound img {
-  border-radius: 50%;
-}
-.pageTitleWithLogo,
-.pageTitle {
-  color: var(--jc-text);
+.pageTitle,
+.pageTitleWithLogo {
+  color: var(--jc-strong);
   font-family: var(--jc-font-display);
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
-/* Tabs (Startseite / Favoriten, Dashboard-Reiter): Glas-Kapsel mit farbiger Auswahl */
-.headerTabs .emby-tabs-slider,
+
+/* ---------- 4  Seitenmenue und Tabs ---------- */
+.mainDrawer,
+body .MuiDrawer-paper {
+  background: var(--jc-surface) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-right: var(--jc-border) solid var(--jc-line) !important;
+  color: var(--jc-text);
+}
+.navMenuOption,
+body .MuiDrawer-paper .MuiListItemButton-root {
+  margin: 2px 10px;
+  width: auto;
+  border-radius: var(--jc-radius-sm);
+  color: var(--jc-text);
+  font-weight: 600;
+  transition: background 140ms, color 140ms;
+}
+.navMenuOption:hover,
+body .MuiDrawer-paper .MuiListItemButton-root:hover {
+  background: var(--jc-hover);
+  color: var(--jc-strong);
+}
+.navMenuOption-selected,
+.navMenuOption-selected:hover,
+body .MuiDrawer-paper .MuiListItemButton-root.Mui-selected {
+  background: var(--jc-accent) !important;
+  color: var(--jc-accent-ink) !important;
+}
+.navMenuOption-selected .navMenuOptionIcon {
+  color: var(--jc-accent-ink);
+}
+.navMenuDivider,
+.sidebarLinkDivider {
+  border-color: var(--jc-line);
+}
+
+/* Tabs in Bibliotheken und Dashboard */
 .emby-tabs-slider {
-  display: inline-flex;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.05)), var(--jc-glass2);
-  border: 1px solid var(--jc-lg-edge);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), inset 0 -1px 0 rgb(255 255 255 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  gap: 4px;
 }
 .emby-tab-button {
-  flex: none;
   margin: 0;
-  padding: 6px 16px;
-  border-radius: 999px;
+  padding: 0.45em 1.1em;
   border: 0 !important;
+  border-radius: 999px;
   background: none;
   color: var(--jc-muted);
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
-  transition: color 140ms, background 280ms var(--jc-ease), box-shadow 280ms var(--jc-ease);
+  transition: color 140ms, background 140ms;
 }
 .emby-tab-button:hover {
-  color: var(--jc-text);
+  background: rgb(255 255 255 / 0.92);
+  color: #111827;
 }
 .emby-tab-button-active,
 .emby-tab-button-active:hover {
-  background: var(--jc-lg-accent) !important;
+  background: var(--jc-accent) !important;
   color: var(--jc-accent-ink) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), inset 0 -1px 0 rgb(0 0 0 / 0.12), 0 6px 16px -4px rgb(var(--jc-accent-rgb) / 0.75);
-}
-
-
-/* ---------- 4  Seitenmenue ---------- */
-.mainDrawer {
-  background: var(--jc-glass) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(1.5);
-  backdrop-filter: blur(30px) saturate(1.5);
-  border-right: 1px solid var(--jc-line);
-}
-.navMenuOption {
-  margin: 2px 10px;
-  width: auto;
-  border-radius: 14px;
-  color: var(--jc-muted);
-  font-weight: 600;
-  transition: background 140ms, color 140ms, transform 140ms var(--jc-ease);
-}
-.navMenuOption:hover {
-  background: var(--jc-glass2);
-  color: var(--jc-text);
-}
-.navMenuOption-selected,
-.navMenuOption-selected:hover {
-  background: linear-gradient(180deg, rgb(var(--jc-accent-rgb) / 0.34), rgb(var(--jc-accent-rgb) / 0.16)) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 0 0 1px rgb(var(--jc-accent-rgb) / 0.45);
-  color: var(--jc-text) !important;
-}
-.navMenuOption-selected .navMenuOptionIcon {
-  color: var(--jc-accent);
-}
-.navMenuDivider,
-.drawerContent .sidebarLinkDivider {
-  border-color: var(--jc-line);
 }
 
 
 /* ---------- 5  Reihen und Karten ---------- */
 .sectionTitle,
 h2.sectionTitle {
-  font: 700 24px/1.2 var(--jc-font-display);
-  letter-spacing: -0.022em;
-  color: var(--jc-text);
+  font: 700 1.45em/1.2 var(--jc-font-display);
+  letter-spacing: -0.02em;
+  color: var(--jc-strong);
 }
 .sectionTitleTextButton,
 .sectionTitleButton {
@@ -220,94 +286,105 @@ h2.sectionTitle {
   font-weight: 600;
 }
 .sectionTitleTextButton:hover {
-  color: var(--jc-text);
+  color: var(--jc-strong);
 }
-
-/* Pfeile der Reihen: runde Glas-Knoepfe (ohne Weichzeichner, es sind viele) */
+.emby-scrollbuttons-button,
 .emby-scrollbuttons button,
 .emby-scrollbuttons .paper-icon-button-light {
-  width: 40px;
-  height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--jc-lg-edge);
-  background: var(--jc-lg-grad), var(--jc-lg-fill);
-  color: var(--jc-text);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), 0 8px 22px -12px rgb(0 0 0 / 0.5);
-  transition: background 140ms, transform 280ms var(--jc-ease-spring);
+  border: var(--jc-border) solid var(--jc-line2);
+  background: var(--jc-surface);
+  color: var(--jc-strong);
+  transition: background 140ms, transform 140ms var(--jc-ease);
 }
-.emby-scrollbuttons button:hover,
-.emby-scrollbuttons .paper-icon-button-light:hover {
-  background: var(--jc-lg-grad), color-mix(in srgb, var(--jc-lg-fill) 60%, rgb(255 255 255 / 0.3));
+.emby-scrollbuttons-button:hover,
+.emby-scrollbuttons button:hover {
+  background: var(--jc-accent);
   transform: scale(1.06);
 }
 
-/* Karten: grosse Rundung, Anheben und sanftes Leuchten beim Ueberfahren */
+/* Karten: Rundung und Rand wie bei ElegantFin, beim Ueberfahren heller Rand, leichtes Vergroessern und ein Glanzstreifen */
 .cardScalable,
 .cardContent,
 .cardImageContainer,
-.cardImage,
 .cardOverlayContainer {
   border-radius: var(--jc-radius);
 }
 .cardScalable {
   overflow: hidden;
-  background: var(--jc-surface);
-  box-shadow: 0 0 0 1px var(--jc-line), 0 10px 26px -14px rgb(0 0 0 / 0.7);
-  transition: transform 280ms var(--jc-ease), box-shadow 280ms var(--jc-ease);
-}
-.card:hover .cardScalable,
-.card:focus-within .cardScalable,
-.cardBox:hover .cardScalable {
-  transform: translateY(-5px) scale(1.035);
-  box-shadow: 0 0 0 1px var(--jc-line2), 0 24px 44px -16px rgb(0 0 0 / 0.8), 0 0 36px -10px rgb(var(--jc-accent-rgb) / 0.55);
-}
-.cardBox {
-  transition: none;
+  background: var(--jc-bg2);
+  box-shadow: 0 0 0 var(--jc-border) var(--jc-line), 0 1px 6px rgb(0 0 0 / 0.3);
+  transition: transform 125ms var(--jc-ease), box-shadow 125ms var(--jc-ease);
 }
 .cardImageContainer {
-  background-color: var(--jc-surface);
+  background-color: var(--jc-bg2);
+  transition: transform 125ms var(--jc-ease);
+}
+.cardScalable::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 35%, rgb(255 255 255 / 0.16) 50%, transparent 65%);
+  transform: translateX(-130%);
+  transition: transform 650ms var(--jc-ease);
+}
+.card:hover .cardScalable,
+.card:focus-within .cardScalable {
+  transform: scale(1.02);
+  box-shadow: 0 0 0 var(--jc-border) rgb(255 255 255 / 0.85), 0 10px 26px -8px rgb(0 0 0 / 0.6);
+}
+.card:hover .cardScalable::after {
+  transform: translateX(130%);
+}
+.card:hover .cardImageContainer {
+  transform: scale(1.025);
 }
 .cardText {
   color: var(--jc-text);
 }
-.cardText-first {
+.cardText-first,
+.cardText-first > a,
+.cardText-first bdi {
+  color: var(--jc-strong);
   font-weight: 600;
-  letter-spacing: -0.005em;
 }
 .cardText-secondary,
 .cardText.cardText-secondary {
   color: var(--jc-muted);
-  font-size: 0.92em;
 }
 
-/* Ueberlagerung beim Ueberfahren: Verlauf von unten und neutraler Glas-Abspielknopf */
+/* Ueberlagerung beim Ueberfahren: Verlauf von unten, Abspielknopf als helle runde Flaeche */
 .cardOverlayContainer {
   background: linear-gradient(to top, rgb(0 0 0 / 0.55), transparent 55%);
 }
 .cardOverlayFab-primary,
 .cardOverlayContainer .cardOverlayFab-primary {
-  width: 56px;
-  height: 56px;
+  width: 3.4em;
+  height: 3.4em;
   border-radius: 50%;
-  color: #fff;
-  background: rgb(18 18 22 / 0.5);
-  border: 1px solid rgb(255 255 255 / 0.38);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 14px 32px -10px rgb(0 0 0 / 0.65);
-  transition: background 140ms, transform 280ms var(--jc-ease-spring);
+  background: rgb(255 255 255 / 0.94) !important;
+  color: #111827 !important;
+  box-shadow: 0 10px 28px -8px rgb(0 0 0 / 0.7);
+  transition: transform 160ms var(--jc-ease), background 140ms;
 }
 .cardOverlayFab-primary:hover {
-  background: rgb(18 18 22 / 0.7);
-  transform: scale(1.12);
+  transform: scale(1.1);
+  background: #fff !important;
 }
+.cardOverlayButton,
 .cardOverlayButton.paper-icon-button-light {
   color: #fff;
+}
+.cardOverlayButton:hover {
+  background: var(--jc-active);
 }
 
 /* Fortschritt, Haken und Anzahl in der Akzentfarbe */
 .itemProgressBar {
-  height: 5px;
-  background: rgb(255 255 255 / 0.3);
-  border-radius: 0;
+  height: 0.3em;
+  background: rgb(255 255 255 / 0.28);
 }
 .itemProgressBarForeground {
   background: var(--jc-accent) !important;
@@ -315,105 +392,123 @@ h2.sectionTitle {
 .countIndicator,
 .playedIndicator,
 .indicator.playedIndicator {
-  min-width: 24px;
-  height: 24px;
-  border-radius: 12px;
-  background: var(--jc-lg-accent) !important;
+  min-width: 1.7em;
+  height: 1.7em;
+  border-radius: 999px;
+  background: var(--jc-accent) !important;
   color: var(--jc-accent-ink) !important;
-  border: 1px solid rgb(255 255 255 / 0.3);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), 0 6px 14px rgb(0 0 0 / 0.35);
   font-weight: 800;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.4);
 }
 
 
 /* ---------- 6  Knoepfe und Eingabefelder ---------- */
 .emby-button.raised,
 .raised:not(.button-submit):not(.button-cancel) {
-  border-radius: calc(var(--jc-radius) * 0.75 + 4px);
-  border: 1px solid var(--jc-lg-edge);
-  background: var(--jc-lg-grad), var(--jc-glass2);
-  color: var(--jc-text);
+  border-radius: var(--jc-radius-sm);
+  border: var(--jc-border) solid var(--jc-line2);
+  background: var(--jc-bg2);
+  color: var(--jc-strong);
   font-weight: 600;
   text-transform: none;
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), inset 0 -1px 0 rgb(255 255 255 / 0.06), var(--jc-lg-lift);
-  -webkit-backdrop-filter: blur(26px) saturate(1.9);
-  backdrop-filter: blur(26px) saturate(1.9);
-  transition: transform 140ms var(--jc-ease), background 140ms, box-shadow 280ms;
+  box-shadow: none;
+  transition: background 140ms, border-color 140ms, transform 140ms var(--jc-ease);
 }
 .emby-button.raised:hover {
-  background: var(--jc-lg-grad), color-mix(in srgb, var(--jc-glass2) 55%, rgb(255 255 255 / 0.2));
-  transform: translateY(-1px);
+  background: var(--jc-input);
+  border-color: rgb(255 255 255 / 0.4);
 }
 .emby-button.raised:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.98);
 }
-/* Hauptknopf: Akzentflaeche mit Lichtkante */
+/* Bestaetigen: Akzentflaeche */
 .button-submit,
 .emby-button.button-submit,
-.raised.button-submit,
-.btnPlay.detailButton,
-.btnResume.detailButton {
-  background: var(--jc-lg-accent) !important;
+.raised.button-submit {
+  background: var(--jc-accent) !important;
   color: var(--jc-accent-ink) !important;
-  border: 1px solid rgb(255 255 255 / 0.22) !important;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), inset 0 -1px 0 rgb(0 0 0 / 0.14), 0 10px 26px -10px rgb(var(--jc-accent-rgb) / 0.85) !important;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  border: var(--jc-border) solid rgb(255 255 255 / 0.25) !important;
 }
 .button-submit:hover,
+.emby-button.button-submit:hover {
+  background: var(--jc-accent-hover) !important;
+}
+/* Detailseite: Abspielen als helle Kapsel, die uebrigen als runde Symbole, beim Ueberfahren hell */
+.mainDetailButtons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em;
+}
+.detailButton {
+  border-radius: 999px;
+  color: var(--jc-strong);
+  transition: background 140ms, color 140ms, transform 140ms var(--jc-ease);
+}
+.detailButton:not(.btnPlay):hover,
+.detailButton:not(.btnPlay):focus-visible {
+  background: rgb(255 255 255 / 0.92);
+  color: #111827;
+}
+.btnPlay.detailButton,
+.btnResume.detailButton {
+  min-width: 8em;
+  height: 3em;
+  padding: 0 1.4em;
+  background: #fff !important;
+  color: #111827 !important;
+  font-weight: 700;
+  box-shadow: 0 10px 26px -10px rgb(0 0 0 / 0.7);
+}
 .btnPlay.detailButton:hover,
 .btnResume.detailButton:hover {
-  filter: brightness(1.07);
+  transform: translateY(-1px);
+  background: rgb(255 255 255 / 0.9) !important;
 }
-/* Runde Symbol-Knoepfe (Favorit, Gesehen, Mehr ...) */
 .paper-icon-button-light {
   border-radius: 50%;
-  transition: background 140ms, color 140ms, transform 140ms var(--jc-ease);
+  transition: background 140ms, color 140ms;
 }
 .paper-icon-button-light:hover,
 .paper-icon-button-light:focus-visible {
-  background: var(--jc-glass2);
-  color: var(--jc-text);
-}
-.detailButton:not(.btnPlay):not(.btnResume):not(.button-submit) {
-  border-radius: 999px;
-  border: 1px solid var(--jc-lg-edge);
-  background: var(--jc-lg-grad), var(--jc-glass2);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), var(--jc-lg-lift);
+  background: var(--jc-hover);
 }
 
-/* Eingabefelder: eingelassenes Glas, Fokus mit Akzentring */
+/* Eingabefelder */
 .emby-input,
 .emby-textarea,
 .emby-select,
 .emby-select-withcolor {
-  border-radius: calc(var(--jc-radius) * 0.7 + 2px);
-  border: 1px solid var(--jc-lg-edge);
-  background: linear-gradient(rgb(0 0 0 / 0.14), rgb(255 255 255 / 0.04)), var(--jc-glass2);
-  color: var(--jc-text);
-  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.28), inset 0 -1px 0 rgb(255 255 255 / 0.1);
+  border-radius: var(--jc-radius-sm);
+  border: var(--jc-border) solid var(--jc-line2);
+  background: var(--jc-input);
+  color: var(--jc-strong);
 }
 .emby-input:focus,
 .emby-textarea:focus,
 .emby-select:focus {
-  border-color: var(--jc-accent) !important;
-  background: linear-gradient(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.05)), var(--jc-surface);
-  box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.25), 0 0 0 4px rgb(var(--jc-accent-rgb) / 0.25);
+  border-color: var(--jc-accent-hover) !important;
+  box-shadow: 0 0 0 0.12em var(--jc-accent-hover);
   outline: none;
 }
 .emby-input::placeholder {
   color: var(--jc-faint);
 }
 .emby-select option {
-  background: var(--jc-surface2);
-  color: var(--jc-text);
+  background: var(--jc-bg2);
+  color: var(--jc-strong);
 }
 .inputLabel,
-.fieldDescription,
-.selectLabel {
+.selectLabel,
+.textareaLabel,
+.fieldDescription {
   color: var(--jc-muted);
 }
-/* Haken und Schalter in der Akzentfarbe */
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused {
+  color: var(--jc-accent-hover) !important;
+}
 .emby-checkbox:checked + span + .checkboxOutline,
 .emby-checkbox:checked + .checkboxOutline {
   background-color: var(--jc-accent);
@@ -432,85 +527,100 @@ h2.sectionTitle {
 /* ---------- 7  Dialoge und Menues ---------- */
 .dialogBackdrop,
 .dialogBackdropOpened {
-  background: rgb(0 0 0 / 0.6);
+  background: rgb(0 0 0 / 0.66);
 }
 .dialog,
 .formDialog,
 .actionSheet,
-.actionSheetContent {
-  background: linear-gradient(150deg, var(--jc-lg-sheen) 0%, rgb(255 255 255 / 0.08) 30%, rgb(255 255 255 / 0.02) 58%, rgb(255 255 255 / 0.14) 100%), var(--jc-lg-fill) !important;
-  -webkit-backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  border: 1px solid var(--jc-lg-edge);
-  border-radius: 28px;
-  color: var(--jc-lg-text);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), inset 0 -1px 0 rgb(255 255 255 / 0.1), 0 30px 70px -18px rgb(0 0 0 / 0.6), 0 4px 14px rgb(0 0 0 / 0.22);
+body .MuiPopover-paper,
+body .MuiMenu-paper,
+body .MuiDialog-paper {
+  background: var(--jc-surface) !important;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  border: var(--jc-border) solid var(--jc-line2);
+  border-radius: var(--jc-radius) !important;
+  color: var(--jc-text);
+  box-shadow: 0 24px 60px -16px rgb(0 0 0 / 0.7) !important;
 }
-/* Ein Menue in einem Dialog bekommt den Glasgrund nur einmal */
 .dialog .actionSheetContent,
 .actionSheet .actionSheetContent {
   background: none !important;
-  border: 0;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
 }
-.actionSheetMenuItem {
+.actionSheetMenuItem,
+body .MuiMenu-list .MuiMenuItem-root {
   margin: 2px 6px;
-  border-radius: 19px;
-  color: var(--jc-lg-text);
-  font-weight: 650;
-  transition: background 140ms, box-shadow 140ms;
+  border-radius: var(--jc-radius-sm);
+  color: var(--jc-text);
+  font-weight: 600;
+  transition: background 140ms;
 }
 .actionSheetMenuItem:hover,
-.actionSheetMenuItem:focus-visible {
-  background: var(--jc-lg-hover);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+.actionSheetMenuItem:focus-visible,
+body .MuiMenu-list .MuiMenuItem-root:hover {
+  background: var(--jc-hover);
+  color: var(--jc-strong);
 }
 .actionSheetItemText,
 .actionSheetTitle {
-  color: var(--jc-lg-text);
+  color: inherit;
 }
 .actionSheetItemAsideText {
-  color: var(--jc-lg-muted);
+  color: var(--jc-muted);
 }
 .toast,
 .toastContainer .toast {
-  background: linear-gradient(150deg, var(--jc-lg-sheen) 0%, rgb(255 255 255 / 0.08) 30%, rgb(255 255 255 / 0.02) 58%, rgb(255 255 255 / 0.14) 100%), var(--jc-lg-fill);
-  -webkit-backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  border: 1px solid var(--jc-lg-edge);
-  border-radius: 24px;
-  color: var(--jc-lg-text);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), 0 30px 70px -18px rgb(0 0 0 / 0.6);
+  background: var(--jc-surface);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: var(--jc-border) solid var(--jc-line2);
+  border-radius: var(--jc-radius);
+  color: var(--jc-strong);
 }
 
 
 /* ---------- 8  Detailseite ---------- */
-/* Hintergrundbild: Verlauf von unten und von links wie im Banner der App */
+/* Hintergrundbild weich gezeichnet, nach unten in die Seitenfarbe auslaufend */
+.backdropImage.displayingBackdropImage,
+.backdropImage {
+  filter: blur(14px) saturate(1.1);
+  transform: scale(1.06);
+}
 .backdropContainer::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(0deg, var(--jc-bg) 1%, color-mix(in srgb, var(--jc-bg) 82%, transparent) 16%, color-mix(in srgb, var(--jc-bg) 30%, transparent) 40%, transparent 70%), linear-gradient(90deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.25) 40%, transparent 70%);
+  background: linear-gradient(0deg, var(--jc-bg2) 2%, rgb(29 38 53 / 0.75) 30%, rgb(17 24 39 / 0.35) 70%, rgb(17 24 39 / 0.5));
 }
-.detailImageContainer .cardImageContainer,
-.detailImageContainer .cardImage {
+.detailPageWrapperContainer,
+.detailPagePrimaryContainer {
+  background: transparent !important;
+}
+.detailRibbon {
+  background: transparent !important;
+  border: 0;
+}
+.detailImageContainer .cardScalable,
+.detailImageContainer .cardImageContainer {
   border-radius: var(--jc-radius);
-  box-shadow: 0 0 0 1px var(--jc-line2), 0 30px 60px -24px rgb(0 0 0 / 0.85);
+}
+.detailImageContainer .cardScalable {
+  box-shadow: 0 0 0 var(--jc-border) var(--jc-line2), 0 30px 60px -24px rgb(0 0 0 / 0.85);
+}
+.detailImageContainer .card:hover .cardScalable {
+  transform: none;
 }
 .itemName,
 .detailPageContent .itemName {
   font-family: var(--jc-font-display);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--jc-text);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--jc-strong);
 }
 .parentName,
 .itemMiscInfo,
 .mediaInfoItem,
-.detailSectionHeader,
 .layout-desktop .nameContainer .parentName {
   color: var(--jc-muted);
 }
@@ -518,57 +628,71 @@ h2.sectionTitle {
   font-weight: 600;
 }
 .mediaInfoOfficialRating {
-  border: 1px solid var(--jc-line2);
-  border-radius: 5px;
-  color: var(--jc-muted);
+  border: var(--jc-border) solid var(--jc-line2);
+  border-radius: 0.3em;
+  color: var(--jc-text);
   font-weight: 700;
   background: none;
 }
 .starRating,
 .starRatingContainer .starIcon {
-  color: #f5c518;
-}
-.mediaInfoCriticRating,
-.mediaInfoCriticRatingFresh {
-  font-weight: 700;
+  color: #fbbf24;
 }
 .overview,
 .itemOverview {
-  color: rgb(255 255 255 / 0.84);
-  line-height: 1.55;
+  color: var(--jc-text);
+  line-height: 1.6;
 }
-.detailSectionHeader,
-.detailSectionContent h2 {
+.detailSectionHeader {
+  color: var(--jc-strong);
   font-family: var(--jc-font-display);
   letter-spacing: -0.015em;
 }
-.listItem,
-.listItem-border {
-  border-radius: 14px;
+.listItem {
+  border-radius: var(--jc-radius-sm);
 }
 .listItem:hover {
-  background: var(--jc-glass2);
+  background: var(--jc-hover);
 }
-.badge,
-.mediaInfoItem .mediaInfoIcon {
-  border-radius: 6px;
+
+
+/* ---------- 9  Anmeldung ---------- */
+#loginPage,
+.loginPage {
+  background: linear-gradient(180deg, var(--jc-bg), var(--jc-bg2)) !important;
+}
+#loginPage h1,
+#loginPage h2,
+.loginPage h1,
+.loginPage h2 {
+  color: var(--jc-strong);
+  font-family: var(--jc-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+#loginPage .emby-button,
+.loginPage .emby-button {
+  border-radius: var(--jc-radius-sm);
+  font-weight: 600;
+  text-transform: none;
 }
 
 
 /* ==========================================================================
-   9  Media Bar (Plugin "Jellyfin Media Bar" von MakD und die Abkoemmlinge, z. B. IAmParadox27, CodeDevMLH)
+   10  Media Bar (Plugin "Jellyfin Media Bar" von MakD und die Abkoemmlinge, z. B. IAmParadox27, CodeDevMLH)
    Selektoren nach slideshowpure.css (v6): #slides-container, .slide, .backdrop, .logo, .plot, .play-button ...
-   Ladereihenfolge: der benutzerdefinierte CSS-Code kommt nach dem Plugin, die Regeln hier gewinnen bei gleicher Gewichtung.
+   Nicht an einer laufenden Media Bar geprueft. Ladereihenfolge: der benutzerdefinierte CSS-Code kommt nach dem Plugin.
    ========================================================================== */
-:root {
+html:root {
   --slideshow-gutter: var(--jc-pad);
   --slideshow-font: var(--jc-font);
-  /* Das Banner niedriger machen (wie das der App, 88 % der Fensterhoehe, hoechstens 860 px)? Die zwei Zeilen unten einschalten:
+  --slideshow-dots-reserve: max(3.4vh, 2.4rem); /* etwas mehr Luft zwischen den Seitenpunkten und der ersten Reihe */
+  /* Das Banner niedriger machen (88 % der Fensterhoehe, hoechstens 860 px)? Die zwei Zeilen unten einschalten:
      --slideshow-height: min(88vh, 860px);
      --slideshow-content-top: calc(min(88vh, 860px) - 40px); */
 }
 
-/* Abdunklung: wie im Banner der App (von unten in die Seitenfarbe, links dunkler, oben ein Schleier) */
+/* Abdunklung: von unten in die Seitenfarbe, links dunkler, oben ein Schleier */
 #slides-container .gradient-overlay {
   background:
     linear-gradient(0deg, var(--jc-bg) 1%, color-mix(in srgb, var(--jc-bg) 82%, transparent) 16%, color-mix(in srgb, var(--jc-bg) 30%, transparent) 36%, transparent 58%),
@@ -578,8 +702,6 @@ h2.sectionTitle {
 #slides-container .backdrop-overlay {
   background: rgb(0 0 0 / 0.1);
 }
-
-/* Text: Logo, Angaben, Beschreibung */
 #slides-container .slide-content {
   font-family: var(--jc-font);
   text-shadow: 0 2px 14px rgb(0 0 0 / 0.5);
@@ -588,16 +710,16 @@ h2.sectionTitle {
   filter: drop-shadow(0 6px 24px rgb(0 0 0 / 0.55));
 }
 #slides-container .plot {
-  font-size: 16px;
+  font-size: 1.05em;
   line-height: 1.5;
-  color: rgb(255 255 255 / 0.84);
+  color: rgb(255 255 255 / 0.86);
   max-width: 56ch;
 }
 #slides-container .info-container,
 #slides-container .misc-info,
 #slides-container .genre {
   font-weight: 600;
-  color: rgb(255 255 255 / 0.85);
+  color: rgb(255 255 255 / 0.86);
 }
 #slides-container .genre {
   color: rgb(255 255 255 / 0.72);
@@ -607,7 +729,7 @@ h2.sectionTitle {
   background: none;
   color: rgb(255 255 255 / 0.85);
   border: 1px solid rgb(255 255 255 / 0.4);
-  border-radius: 5px;
+  border-radius: 0.3em;
   font-weight: 700;
 }
 #slides-container .plate-eyebrow,
@@ -618,96 +740,94 @@ h2.sectionTitle {
   color: rgb(255 255 255 / 0.72);
 }
 
-/* Knoepfe: Abspielen = Akzent-Kapsel, Details und Favorit = runde Glas-Knoepfe (ohne Weichzeichner, damit ein Trailer dahinter keine Streifen zeigt) */
+/* Knoepfe: Abspielen = helle Kapsel (wie auf der Detailseite), Details und Favorit = runde Glas-Knoepfe ohne Weichzeichner */
 #slides-container .play-button {
-  height: 46px;
-  padding: 0 22px;
-  border-radius: calc(var(--jc-radius) * 0.75 + 4px);
-  border: 1px solid rgb(255 255 255 / 0.22);
-  background: var(--jc-lg-accent);
-  color: var(--jc-accent-ink);
-  font: 700 15px var(--jc-font);
+  height: 3em;
+  min-width: 8em;
+  padding: 0 1.4em;
+  border-radius: 999px;
+  border: 0;
+  background: #fff;
+  color: #111827;
+  font-weight: 700;
   text-shadow: none;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), inset 0 -1px 0 rgb(0 0 0 / 0.14), 0 10px 26px -10px rgb(var(--jc-accent-rgb) / 0.85);
-  transition: transform 140ms var(--jc-ease), filter 140ms, box-shadow 280ms;
+  box-shadow: 0 10px 26px -10px rgb(0 0 0 / 0.7);
+  transition: transform 140ms var(--jc-ease), background 140ms;
 }
 #slides-container .play-button:hover {
-  filter: brightness(1.07);
+  background: rgb(255 255 255 / 0.9);
   transform: translateY(-1px);
-}
-#slides-container .play-button:active {
-  transform: scale(0.98);
 }
 #slides-container .detail-button,
 #slides-container .favorite-button {
-  width: 46px;
-  height: 46px;
+  width: 3em;
+  height: 3em;
   border-radius: 50%;
-  border: 1px solid var(--jc-lg-edge);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.07)), rgb(16 18 30 / 0.46);
+  border: var(--jc-border) solid rgb(255 255 255 / 0.3);
+  background: rgb(17 24 39 / 0.55);
   color: #fff;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), var(--jc-lg-lift);
-  transition: transform 140ms var(--jc-ease), background 140ms;
+  transition: background 140ms, color 140ms, transform 140ms var(--jc-ease);
 }
 #slides-container .detail-button:hover,
 #slides-container .favorite-button:hover {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.12)), rgb(16 18 30 / 0.5);
+  background: rgb(255 255 255 / 0.92);
+  color: #111827;
   transform: translateY(-1px);
 }
 #slides-container .favorite-button.favorited {
-  color: #ff6b86;
+  color: #f87171;
 }
 #slides-container :is(.play-button, .detail-button, .favorite-button, .arrow):focus-visible {
-  outline: 2px solid var(--jc-accent);
+  outline: 2px solid var(--jc-accent-hover);
   outline-offset: 3px;
 }
 
-/* Seitenpunkte: Glas-Kapsel, der aktive Punkt wird zur laengeren Pille (wie in der App) */
+/* Seitenpunkte: Kapsel, der aktive Punkt wird zur laengeren Pille in der Akzentfarbe */
 #slides-container .dots-container {
   gap: 8px;
-  padding: 9px 12px;
+  padding: 0.45em 0.75em;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.12);
-  border: 1px solid rgb(255 255 255 / 0.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.8);
-  backdrop-filter: blur(24px) saturate(1.8);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+  background: rgb(17 24 39 / 0.45);
+  border: var(--jc-border) solid rgb(255 255 255 / 0.18);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   align-items: center;
+}
+#slides-container.layout-marquee .dots-container {
+  margin-top: -0.7em; /* ein Stueck hoeher (kein transform: das Plugin zentriert die Punkte auf schmalen Bildschirmen damit) */
+}
+#slides-container.layout-plate .dots-container {
+  margin-top: 0.3em; /* die Kapsel ist hoeher als die einfachen Punkte: etwas Abstand zu den Knoepfen darueber */
 }
 #slides-container .dot {
   width: 8px;
   height: 8px;
   border-radius: 6px;
-  background: rgb(255 255 255 / 0.38);
+  background: rgb(255 255 255 / 0.4);
   transform: none;
   transition: width 280ms var(--jc-ease), background 140ms;
 }
 #slides-container .dot.active {
-  width: 30px;
+  width: 28px;
   height: 8px;
   background: #fff;
   transform: none;
 }
-
-/* Pfeile links und rechts: runde Glas-Knoepfe */
 #slides-container .arrow {
-  width: 44px;
-  height: 44px;
+  width: 3em;
+  height: 3em;
   border-radius: 50%;
-  border: 1px solid var(--jc-lg-edge);
-  background: var(--jc-lg-grad), var(--jc-lg-fill);
+  border: var(--jc-border) solid rgb(255 255 255 / 0.25);
+  background: rgb(17 24 39 / 0.55);
   color: #fff;
-  -webkit-backdrop-filter: blur(28px) saturate(1.3);
-  backdrop-filter: blur(28px) saturate(1.3);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), 0 8px 22px -12px rgb(0 0 0 / 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 #slides-container .arrow:hover {
-  background: var(--jc-lg-grad), color-mix(in srgb, var(--jc-lg-fill) 60%, rgb(255 255 255 / 0.3));
+  background: var(--jc-accent);
 }
-
-/* Lautstaerke, Pause und Einstellungen oben rechts */
 #slides-container .volume-toggle,
 #slides-container .pause-button,
 .ss-settings-toggle {
@@ -715,15 +835,15 @@ h2.sectionTitle {
 }
 .ss-settings {
   font-family: var(--jc-font);
-  border-radius: 28px;
-  border: 1px solid var(--jc-lg-edge);
-  background: linear-gradient(150deg, var(--jc-lg-sheen) 0%, rgb(255 255 255 / 0.08) 30%, rgb(255 255 255 / 0.02) 58%, rgb(255 255 255 / 0.14) 100%), var(--jc-lg-fill);
-  -webkit-backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  backdrop-filter: blur(38px) saturate(2) brightness(1.1);
-  box-shadow: inset 0 1px 0 var(--jc-lg-edge-top), 0 30px 70px -18px rgb(0 0 0 / 0.6);
+  border-radius: var(--jc-radius);
+  border: var(--jc-border) solid var(--jc-line2);
+  background: var(--jc-surface);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 60px -16px rgb(0 0 0 / 0.7);
 }
 .ss-choice-btn.is-active {
-  background: var(--jc-lg-accent);
+  background: var(--jc-accent);
   color: var(--jc-accent-ink);
   border-color: transparent;
 }
@@ -736,52 +856,59 @@ h2.sectionTitle {
 }
 
 
-/* ---------- 10  Kleine Bildschirme und weniger Bewegung ---------- */
+/* ---------- 11  Kleine Bildschirme und weniger Bewegung ---------- */
 @media (max-width: 767px) {
   :root {
-    --jc-radius: 14px;
+    --jc-radius: 0.8em;
   }
   .sectionTitle,
   h2.sectionTitle {
-    font-size: 20px;
+    font-size: 1.25em;
   }
-  .cardOverlayFab-primary {
-    width: 48px;
-    height: 48px;
-  }
-  .emby-tab-button {
-    padding: 6px 12px;
+  .dialog,
+  .formDialog {
+    border-radius: 0 !important;
   }
   #slides-container .plot {
-    font-size: 15px;
+    font-size: 1em;
   }
   #slides-container .play-button {
-    height: 42px;
-    padding: 0 18px;
+    height: 2.7em;
+    padding: 0 1.1em;
   }
   #slides-container .detail-button,
   #slides-container .favorite-button {
-    width: 42px;
-    height: 42px;
+    width: 2.7em;
+    height: 2.7em;
   }
 }
 @media (hover: none) {
-  .card:hover .cardScalable {
+  .card:hover .cardScalable,
+  .card:hover .cardImageContainer {
     transform: none;
+  }
+  .card:hover .cardScalable::after {
+    transform: translateX(-130%);
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .cardScalable,
+  .cardImageContainer,
+  .cardScalable::after,
+  .detailButton,
   .emby-tab-button,
   .navMenuOption,
-  .headerButton,
   #slides-container .dot,
   #slides-container .play-button,
   #slides-container .detail-button,
   #slides-container .favorite-button {
     transition: none !important;
   }
-  .card:hover .cardScalable {
+  .card:hover .cardScalable,
+  .card:hover .cardImageContainer {
     transform: none;
+  }
+  .card:hover .cardScalable::after {
+    transform: translateX(-130%);
   }
 }
